@@ -82,9 +82,13 @@ class Blockchain(object):
         in an effort to find a number that is a valid proof
         :return: A valid proof for the provided block
         """
-        # TODO
-        pass
+        block_string = json.dumps(block, sort_keys=True)
+        proof = 0
+        # loop while the return from a call to valid proof is False
+        while self.valid_proof(block_string, proof) is False:
+            proof += 1        
         # return proof
+        return proof
 
     @staticmethod
     def valid_proof(block_string, proof):
@@ -98,9 +102,14 @@ class Blockchain(object):
         correct number of leading zeroes.
         :return: True if the resulting hash is a valid proof, False otherwise
         """
-        # TODO
+        # set a initial guess concatonate block string and proof then encode them
+        guess = f"{block_string}{proof}".encode()
+        # create a guess hash and hexdigest it
+        guess_hash = hashlib.sha256(guess).hexdigest()
         pass
-        # return True or False
+        # then return True if the guess hash has the valid number of leading zeros otherwise return False
+        return guess_hash[:3] == "000"
+
 
 
 # Instantiate our Node
@@ -116,12 +125,13 @@ blockchain = Blockchain()
 @app.route('/mine', methods=['GET'])
 def mine():
     # Run the proof of work algorithm to get the next proof
+    proof = blockchain.proof_of_work()
 
     # Forge the new Block by adding it to the chain with the proof
+    previous_hash = blockchain.hash(blockchain.last_block)
+    block = blockchain.new_block(proof, previous_hash)
 
-    response = {
-        # TODO: Send a JSON response with the new block
-    }
+    response = { "block": block }
 
     return jsonify(response), 200
 
@@ -129,7 +139,8 @@ def mine():
 @app.route('/chain', methods=['GET'])
 def full_chain():
     response = {
-        # TODO: Return the chain and its current length
+        "length": len(blockchain.chain),
+        "chain": blockchain.chain
     }
     return jsonify(response), 200
 
