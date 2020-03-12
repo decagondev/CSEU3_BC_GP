@@ -10,6 +10,7 @@ class Blockchain(object):
     def __init__(self):
         self.chain = []
         self.current_transactions = []
+        self.nodes = set()
 
         # Create the genesis block
         self.new_block(previous_hash=1, proof=100)
@@ -68,6 +69,31 @@ class Blockchain(object):
 
         # Return the hashed block string in hexadecimal format
         return hashlib.sha256(block_string).hexdigest()
+
+    def new_transaction(self, sender, recipient, amount):
+        """
+        Creates a new transaction to go into the next mined Block
+
+        :param sender: <str> Address of the Recipient
+        :param recipient: <str> Address of the Recipient
+        :param amount: <int> Amount
+        :return: <int> The index of the BLock that will hold this transaction
+        """
+        # build a transaction dictionary
+        new_transaction = {
+            'sender': sender,
+            'recipient': recipient,
+            'amount': amount
+        }
+
+        # append the transaction to the current transactions
+        self.current_transactions.append(new_transaction)
+        
+        # return the current blocks index
+        current_block_index = self.last_block['index'] + 1
+        return current_block_index
+
+
 
 
     @property
@@ -163,6 +189,19 @@ def last_block():
     response = { 'last_block': blockchain.last_block }
     return jsonify(response), 200
 
+@app.route('/transactions/new', methods=['POST'])
+def new_transaction():
+    data = request.get_json()
+    required = ['sender', 'recipient', 'amount']
+    if not all(k in data for k in required):
+        return 'Missing Values', 400
+
+    # create a new transaction
+    index = blockchain.new_transaction(data.get('sender'), data.get('recipient'), data.get('amount'))
+
+    response = {'message': f'Transaction will be added to Block {index}'}
+
+    return jsonify(response), 201
 
 # Run the program on port 5000
 if __name__ == '__main__':
