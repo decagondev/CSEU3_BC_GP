@@ -7,3 +7,15 @@
 - lets make a simple Flask app
 - Lets write a basic Blockchain
 
+# Day 4 Block Chain
+
+## Client Miner
+- build out client miner
+
+## Transactions and rewards
+- build out a transactions endpoint
+- add functionality for transactions
+
+
+
+
