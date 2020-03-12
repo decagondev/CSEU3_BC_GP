@@ -90,7 +90,6 @@ class Blockchain(object):
         guess = f"{block_string}{proof}".encode()
         # create a guess hash and hexdigest it
         guess_hash = hashlib.sha256(guess).hexdigest()
-        pass
         # then return True if the guess hash has the valid number of leading zeros otherwise return False
         return guess_hash[:6] == "000000"
 
@@ -127,7 +126,7 @@ def mine():
 
     # determine if proof is valid
     last_block = blockchain.last_block
-    last_block_string = json.dumps(last_block, sorted_keys=True)
+    last_block_string = json.dumps(last_block, sort_keys=True)
     if blockchain.valid_proof(last_block_string, submitted_proof):
         # forge the new block
         previous_hash = blockchain.hash(last_block)
