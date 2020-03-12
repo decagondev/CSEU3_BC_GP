@@ -5,4 +5,5 @@
 ## Basic Block GP
 - lets review the TK https://learn.lambdaschool.com/cs/module/rec1S1HMqewKkwziz/
 - lets make a simple Flask app
-- Lets wrote a basic Blockchain
+- Lets write a basic Blockchain
+
